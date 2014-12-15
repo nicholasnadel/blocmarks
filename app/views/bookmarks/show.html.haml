@@ -1,0 +1,4 @@
+%h1 @bookmark.title
+%p @bookmark.url
+
+= render partial: 'likes/like', locals: { bookmark: @bookmark }
