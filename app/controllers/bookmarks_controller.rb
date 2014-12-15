@@ -2,10 +2,8 @@ class BookmarksController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    @bookmarks = Bookmark.all
-    @categories = Category.all
-    @my_bookmarks = current_user.bookmarks
-    authorize @bookmarks
+    @categories = current_user.categories.order('name ASC').includes(:bookmarks).uniq
+    @my_bookmarks = current_user.bookmarks.order('created_at DESC')
     authorize @my_bookmarks
   end
 
@@ -58,10 +56,9 @@ class BookmarksController < ApplicationController
   end
 
   def destroy
-    @bookmark = Bookmark.find(params[:id])
-
-    authorize @bookmark
-    if @bookmark.destroy
+    bookmark = current_user.bookmarks.find(params[:id])
+    authorize bookmark
+    if bookmark.destroy
       flash[:notice] = "Bookmark was deleted."
       redirect_to bookmarks_path
     else

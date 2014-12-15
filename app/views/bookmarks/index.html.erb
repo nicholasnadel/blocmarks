@@ -1,0 +1,27 @@
+<h2>My Bookmarks</h2>
+<% if policy(Bookmark.new).create? %>
+  <%= link_to "New", new_bookmark_path, class: 'btn btn-success' %>
+<% end %>
+<% @categories.each do |category| %>
+  <h4>
+    <%= link_to "##{category.name}", category %>
+  </h4>
+  <% category.bookmarks.each do |bookmark| %>
+    <div class="media">
+      <div class="media-body">
+        <%= link_to bookmark.url  %>
+        <%= time_ago_in_words bookmark.created_at %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+<h2>Liked Bookmarks</h2>
+<% current_user.likes.each do |like| %>
+  <% bookmark = Bookmark.find(like.bookmark_id) %>
+  <div class="media">
+    <div class="media-body">
+      <%= render partial: 'likes/like', locals: { bookmark: bookmark } %>
+      <%= link_to bookmark.url %>
+    </div>
+  </div>
+<% end %>
